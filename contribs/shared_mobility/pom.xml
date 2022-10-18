@@ -9,19 +9,19 @@
 	<parent>
 		<groupId>org.matsim</groupId>
 		<artifactId>contrib</artifactId>
-		<version>15.0-SNAPSHOT</version>
+		<version>15.0-PR2213-more-thread-data-1</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.matsim</groupId>
 			<artifactId>matsim-examples</artifactId>
-			<version>15.0-SNAPSHOT</version>
+			<version>15.0-PR2213-more-thread-data-1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.matsim.contrib</groupId>
 			<artifactId>common</artifactId>
-			<version>15.0-SNAPSHOT</version>
+			<version>15.0-PR2213-more-thread-data-1</version>
 		</dependency>
 	</dependencies>
 
