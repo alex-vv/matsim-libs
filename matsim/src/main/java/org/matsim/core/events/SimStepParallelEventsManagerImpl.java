@@ -108,8 +108,10 @@ class SimStepParallelEventsManagerImpl implements EventsManager {
 	@Override
 	public void addHandler(final EventHandler handler) {
 		delegate.addHandler(handler);
+		int eventsManagerIndex = handlerCount % numOfThreads;
+		log.info("Adding event handler to thread index " + eventsManagerIndex + " <== " + handler.getClass().getName());
 
-		eventsManagers[handlerCount % numOfThreads].addHandler(handler);
+		eventsManagers[eventsManagerIndex].addHandler(handler);
 		handlerCount++;
 	}
 
@@ -347,7 +349,7 @@ class SimStepParallelEventsManagerImpl implements EventsManager {
 			} catch (InterruptedException | BrokenBarrierException e) {
 				throw new RuntimeException(e);
 			}
-            Gbl.printCurrentThreadCpuTime();
+			Gbl.printCurrentThreadCpuTime();
 		}
 
 		public void processEvent(Event event) {
