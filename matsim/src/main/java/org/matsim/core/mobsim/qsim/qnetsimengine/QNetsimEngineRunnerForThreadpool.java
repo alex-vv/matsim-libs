@@ -22,6 +22,8 @@ package org.matsim.core.mobsim.qsim.qnetsimengine;
 
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.core.gbl.Gbl;
 
 /**
@@ -31,7 +33,9 @@ import org.matsim.core.gbl.Gbl;
  * @author droeder @ Senozon Deutschland GmbH
  */
 final class QNetsimEngineRunnerForThreadpool extends AbstractQNetsimEngineRunner implements Callable<Boolean>{
-	
+
+	private final static Logger LOG = LogManager.getLogger(QNetsimEngineWithThreadpool.class);
+
 	private volatile boolean simulationRunning = true;
 	private boolean movingNodes;
 
@@ -41,6 +45,7 @@ final class QNetsimEngineRunnerForThreadpool extends AbstractQNetsimEngineRunner
 	@Override
 	public Boolean call() {
 		if (!this.simulationRunning) {
+			LOG.info("Print Thread performance now!");
 			Gbl.printCurrentThreadCpuTime();
 			return false;
 		}
