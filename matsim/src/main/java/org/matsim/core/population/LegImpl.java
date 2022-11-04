@@ -27,17 +27,17 @@ import org.matsim.core.utils.misc.OptionalTime;
 import org.matsim.core.utils.misc.Time;
 import org.matsim.utils.objectattributes.attributable.Attributes;
 
-/* deliberately package */  final class LegImpl  implements Leg {
+/* deliberately package */ final class LegImpl  implements Leg {
 
 	private Route route = null;
 
-	private OptionalTime depTime = OptionalTime.undefined();
-	private OptionalTime travTime = OptionalTime.undefined();
+	private double depTime = OptionalTime.undefined().getRawSeconds();
+	private double travTime = OptionalTime.undefined().getRawSeconds();
 	private String mode;
 
 	private final Attributes attributes = new Attributes();
 
-	/* deliberately package */  LegImpl(final String transportMode) {
+	/* deliberately package */ LegImpl(final String transportMode) {
 		this.mode = transportMode;
 	}
 
@@ -56,32 +56,32 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 
 	@Override
 	public final OptionalTime getDepartureTime() {
-		return this.depTime;
+		return OptionalTime.of(this.depTime);
 	}
 
 	@Override
 	public final void setDepartureTime(final double depTime) {
-		this.depTime = OptionalTime.defined(depTime);
+		this.depTime = depTime;
 	}
 
 	@Override
 	public void setDepartureTimeUndefined() {
-		this.depTime = OptionalTime.undefined();
+		this.depTime = OptionalTime.undefined().getRawSeconds();
 	}
 
 	@Override
 	public final OptionalTime getTravelTime() {
-		return this.travTime;
+		return OptionalTime.of(this.travTime);
 	}
 
 	@Override
 	public final void setTravelTime(final double travTime) {
-		this.travTime = OptionalTime.defined(travTime);
+		this.travTime = travTime;
 	}
 
 	@Override
 	public void setTravelTimeUndefined() {
-		this.travTime = OptionalTime.undefined();
+		this.travTime = OptionalTime.undefined().getRawSeconds();
 	}
 
 	@Override
@@ -106,8 +106,8 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 				+ Time.writeTime(this.getTravelTime())
 				+ "]"
 				+ "[arrTime="
-				+ (depTime.isDefined() && travTime.isDefined()?
-				Time.writeTime(depTime.seconds() + travTime.seconds()) :
+				+ (getDepartureTime().isDefined() && getTravelTime().isDefined() ?
+				Time.writeTime(getDepartureTime().seconds() + getTravelTime().seconds()) :
 				Time.writeTime(OptionalTime.undefined()))
 				+ "]"
 				+ "[route="
