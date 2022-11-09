@@ -46,14 +46,14 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 	// Case (X): facilityId inconsistent with linkId, coord.  Idea: mobsim takes the facilityId and (a) checks the other
 	// attribs or (b) ignores them.
 
-	private double endTime = OptionalTime.undefined().getRawSeconds();
+	private double endTime = OptionalTime.toSeconds(OptionalTime.undefined());
 
 	/**
 	 * Used for reporting outcomes in the scoring. Not interpreted for the demand.
 	 */
-	private double startTime = OptionalTime.undefined().getRawSeconds();
+	private double startTime = OptionalTime.toSeconds(OptionalTime.undefined());
 
-	private double dur = OptionalTime.undefined().getRawSeconds();
+	private double dur = OptionalTime.toSeconds(OptionalTime.undefined());
 
 	private String type;
 	private Coord coord = null;
@@ -68,7 +68,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 
 	@Override
 	public final OptionalTime getEndTime() {
-		return OptionalTime.of(this.endTime);
+		return OptionalTime.fromSeconds(this.endTime);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 
 	@Override
 	public final void setEndTimeUndefined() {
-		this.endTime = OptionalTime.undefined().getRawSeconds();
+		this.endTime = OptionalTime.toSeconds(OptionalTime.undefined());
 	}
 
 	/**
@@ -86,7 +86,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 	 */
 	@Override
 	public final OptionalTime getStartTime() {
-		return OptionalTime.of(this.startTime);
+		return OptionalTime.fromSeconds(this.startTime);
 	}
 
 	/**
@@ -98,7 +98,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 	}
 
 	public final void setStartTimeUndefined() {
-		this.startTime = OptionalTime.undefined().getRawSeconds();
+		this.startTime = OptionalTime.toSeconds(OptionalTime.undefined());
 	}
 
 	@Override
@@ -170,7 +170,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 
 	@Override
 	public OptionalTime getMaximumDuration() {
-		return OptionalTime.of(this.dur);
+		return OptionalTime.fromSeconds(this.dur);
 	}
 
 	@Override
@@ -180,7 +180,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 
 	@Override
 	public void setMaximumDurationUndefined() {
-		this.dur = OptionalTime.undefined().getRawSeconds();
+		this.dur = OptionalTime.toSeconds(OptionalTime.undefined());
 	}
 
 	@Override
