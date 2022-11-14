@@ -160,7 +160,6 @@ public class SwissRailRaptorCore {
                     double waitingCost = waitingTime * -parameters.getMarginalUtilityOfWaitingPt_utl_s();
 
                     RRouteStop toRouteStop = this.data.routeStops[routeStopIndex];
-                    PathElement pe = new PathElement(null, toRouteStop, TIME_UNDEFINED, nextDepartureTimeAtStop, arrivalTime, arrivalCost, 0, stop.distance, 0, true, null, stop);
 
                     /* okay, the following is not very nice...
                      * we want to find the least-cost access leg including the waiting time
@@ -176,6 +175,7 @@ public class SwissRailRaptorCore {
                     double xCost = arrivalCost + waitingCost;
 
                     if (xCost < this.leastArrivalCostAtRouteStop[routeStopIndex]) {
+                        PathElement pe = new PathElement(null, toRouteStop, TIME_UNDEFINED, nextDepartureTimeAtStop, arrivalTime, arrivalCost, 0, stop.distance, 0, true, null, stop);
                         this.arrivalPathPerRouteStop[routeStopIndex] = pe;
                         this.leastArrivalCostAtRouteStop[routeStopIndex] = xCost;
                         this.improvedRouteStopIndices.set(routeStopIndex);
@@ -188,13 +188,13 @@ public class SwissRailRaptorCore {
                 } else if (isIntermodalAccess) {
                     // there is no more departure, but we start here by intermodal access, so still register to allow transfers to other (non-)intermodal stops.
                     RRouteStop toRouteStop = this.data.routeStops[routeStopIndex];
-                    PathElement pe = new PathElement(null, toRouteStop, TIME_UNDEFINED, TIME_UNDEFINED, arrivalTime, arrivalCost, 0, stop.distance, 0, true, null, stop);
 
                     /* okay, the following is not very nice...
                      * ... see long comment above, it's the same
                      */
                     if (arrivalCost < this.leastArrivalCostAtRouteStop[routeStopIndex]) {
                         hasIntermodalAccess = true;
+                        PathElement pe = new PathElement(null, toRouteStop, TIME_UNDEFINED, TIME_UNDEFINED, arrivalTime, arrivalCost, 0, stop.distance, 0, true, null, stop);
                         this.arrivalPathPerRouteStop[routeStopIndex] = pe;
                         this.leastArrivalCostAtRouteStop[routeStopIndex] = arrivalCost;
                         this.improvedRouteStopIndices.set(routeStopIndex);
