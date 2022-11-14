@@ -615,11 +615,11 @@ public class SwissRailRaptorCore {
                 transferProvider.reset(boardingPE.transfer);
 
                 for (int toRouteStopIndex = firstRouteStopIndex + 1; toRouteStopIndex < route.indexFirstRouteStop + route.countRouteStops; toRouteStopIndex++) {
-                    routeSegmentIterator.reset(currentDepartureIndex, currentAgentBoardingTime, currentBoardingRouteStopIndex, toRouteStopIndex);
+                    this.routeSegmentIterator.reset(currentDepartureIndex, currentAgentBoardingTime, currentBoardingRouteStopIndex, toRouteStopIndex);
                     RRouteStop toRouteStop = this.data.routeStops[toRouteStopIndex];
                     int arrivalTime = currentDepartureTime + toRouteStop.arrivalOffset;
                     int inVehicleTime = arrivalTime - currentAgentBoardingTime;
-                    double inVehicleCost = this.inVehicleCostCalculator.getInVehicleCost(inVehicleTime, marginalUtilityOfTravelTime_utl_s, person, currentVehicle, parameters, routeSegmentIterator);
+                    double inVehicleCost = this.inVehicleCostCalculator.getInVehicleCost(inVehicleTime, marginalUtilityOfTravelTime_utl_s, person, currentVehicle, parameters, this.routeSegmentIterator);
                     double arrivalTravelCost = currentTravelCostWhenBoarding + inVehicleCost;
                     double arrivalTransferCost = (boardingPE.firstDepartureTime != TIME_UNDEFINED) ? (currentTransferCostWhenBoarding + this.transferCostCalculator.calcTransferCost(transferProvider, parameters, arrivalTime - firstDepartureTime, boardingPE.transferCount, boardingPE.arrivalTransferCost, boardingPE.arrivalTime)) : 0;
                     double previousArrivalCost = this.leastArrivalCostAtRouteStop[toRouteStopIndex];
@@ -692,9 +692,9 @@ public class SwissRailRaptorCore {
 
     private int findNextDepartureIndex(RRoute route, RRouteStop routeStop, int time) {
         if (this.useCapacityConstraints) {
-            return findNextDepartureIndexWithConstraints(route, routeStop, time);
+            return findNextDepartureIndexWithConstraints(routeStop, time);
         }
-        int depTimeAtRouteStart = (int) (time - routeStop.departureOffset);
+        int depTimeAtRouteStart = time - routeStop.departureOffset;
         int fromIndex = route.indexFirstDeparture;
         int toIndex = fromIndex + route.countDepartures;
         int pos = Arrays.binarySearch(this.data.departures, fromIndex, toIndex, depTimeAtRouteStart);
@@ -713,7 +713,7 @@ public class SwissRailRaptorCore {
         return pos;
     }
 
-    private int findNextDepartureIndexWithConstraints(RRoute route, RRouteStop routeStop, int time) {
+    private int findNextDepartureIndexWithConstraints(RRouteStop routeStop, int time) {
         return this.data.occupancyData.getNextAvailableDeparture(this.data, routeStop, time);
     }
 
