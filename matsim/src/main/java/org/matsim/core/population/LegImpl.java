@@ -27,12 +27,14 @@ import org.matsim.core.utils.misc.OptionalTime;
 import org.matsim.core.utils.misc.Time;
 import org.matsim.utils.objectattributes.attributable.Attributes;
 
-/* deliberately package */ final class LegImpl  implements Leg {
+/* deliberately package */ final class LegImpl implements Leg {
+
+	private static final double UNDEFINED_TIME = Double.NEGATIVE_INFINITY;
 
 	private Route route = null;
 
-	private double depTime = OptionalTime.toSeconds(OptionalTime.undefined());
-	private double travTime = OptionalTime.toSeconds(OptionalTime.undefined());
+	private double depTime = UNDEFINED_TIME;
+	private double travTime = UNDEFINED_TIME;
 	private String mode;
 
 	private final Attributes attributes = new Attributes();
@@ -41,13 +43,18 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 		this.mode = transportMode;
 	}
 
+
+	private static OptionalTime asOptionalTime(double seconds) {
+		return Double.isInfinite(seconds) ? OptionalTime.undefined() : OptionalTime.defined(seconds);
+	}
+
 	@Override
-	public final String getMode() {
+	public String getMode() {
 		return this.mode;
 	}
 
 	@Override
-	public final void setMode(String transportMode) {
+	public void setMode(String transportMode) {
 		this.mode = transportMode;
 		TripStructureUtils.setRoutingMode( this, null );
 //		TripStructureUtils.setRoutingMode( this, null ); // setting routingMode to null leads to exceptions in AttributesXmlWriterDelegate.writeAttributes() : Class<?> clazz = objAttribute.getValue().getClass();
@@ -55,33 +62,33 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 	}
 
 	@Override
-	public final OptionalTime getDepartureTime() {
-		return OptionalTime.fromSeconds(this.depTime);
+	public OptionalTime getDepartureTime() {
+		return asOptionalTime(this.depTime);
 	}
 
 	@Override
-	public final void setDepartureTime(final double depTime) {
+	public void setDepartureTime(final double depTime) {
 		this.depTime = depTime;
 	}
 
 	@Override
 	public void setDepartureTimeUndefined() {
-		this.depTime = OptionalTime.toSeconds(OptionalTime.undefined());
+		this.depTime = UNDEFINED_TIME;
 	}
 
 	@Override
-	public final OptionalTime getTravelTime() {
-		return OptionalTime.fromSeconds(this.travTime);
+	public OptionalTime getTravelTime() {
+		return asOptionalTime(this.travTime);
 	}
 
 	@Override
-	public final void setTravelTime(final double travTime) {
+	public void setTravelTime(final double travTime) {
 		this.travTime = travTime;
 	}
 
 	@Override
 	public void setTravelTimeUndefined() {
-		this.travTime = OptionalTime.toSeconds(OptionalTime.undefined());
+		this.travTime = UNDEFINED_TIME;
 	}
 
 	@Override
@@ -90,12 +97,12 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 	}
 
 	@Override
-	public final void setRoute(Route route) {
+	public void setRoute(Route route) {
 		this.route = route;
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
 		return "leg [mode="
 				+ this.getMode()
 				+ "]"
@@ -118,7 +125,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 
 	@Override
 	public Attributes getAttributes() {
-		return attributes;
+		return this.attributes;
 	}
 
 	//	private boolean locked;
