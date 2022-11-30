@@ -82,7 +82,7 @@ import org.matsim.utils.objectattributes.attributable.Attributes;
 			return null;
 		}
 		Plan newPlan = PopulationUtils.createPlan(oldPlan.getPerson());
-		PopulationUtils.copyFromTo(oldPlan, newPlan);
+		PopulationUtils.copyFromTo(oldPlan, newPlan, true);
 		this.getPlans().add(newPlan);
 		this.setSelectedPlan(newPlan);
 		return newPlan;

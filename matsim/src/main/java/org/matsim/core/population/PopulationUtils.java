@@ -65,6 +65,7 @@ import org.matsim.core.population.routes.NetworkRoute;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.population.routes.RouteFactory;
 import org.matsim.core.population.routes.RouteUtils;
+import org.matsim.core.router.StageActivityTypeIdentifier;
 import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.router.TripStructureUtils.StageActivityHandling;
 import org.matsim.core.scenario.MutableScenario;
@@ -774,6 +775,12 @@ public final class PopulationUtils {
 		return act ;
 	}
 
+	public static Activity createInteractionActivityFromCoordAndLinkId(String type, Coord coord, Id<Link> linkId) {
+		Activity act = getFactory().createInteractionActivityFromCoord(type, coord) ;
+		act.setLinkId(linkId);
+		return act ;
+	}
+
 	public static Leg createLeg(String transportMode) {
 		return getFactory().createLeg(transportMode) ;
 	}
@@ -818,8 +825,8 @@ public final class PopulationUtils {
 	}
 
 	public static Activity createStageActivityFromCoordLinkIdAndModePrefix(final Coord interactionCoord, final Id<Link> interactionLink, String modePrefix ) {
-		Activity act = createActivityFromCoordAndLinkId(PlanCalcScoreConfigGroup.createStageActivityType(modePrefix), interactionCoord, interactionLink);
-		act.setMaximumDuration(0.0);
+		Activity act = createInteractionActivityFromCoordAndLinkId(PlanCalcScoreConfigGroup.createStageActivityType(modePrefix), interactionCoord, interactionLink);
+//		act.setMaximumDuration(0.0); // obsolete since this is hard-coded in InteractionActivity
 		return act;
 	}
 
@@ -831,13 +838,19 @@ public final class PopulationUtils {
 	 * @param in a plan who's data will be loaded into this plan
 	 * @param out
 	 **/
-	public static void copyFromTo(final Plan in, Plan out) {
+	public static void copyFromTo(final Plan in, final Plan out) {
+		copyFromTo(in, out, false); // by default 'false' to be backwards compatible
+	}
+
+	public static void copyFromTo(final Plan in, final Plan out, final boolean convertInteractionActivities) {
 		out.getPlanElements().clear();
 		out.setScore(in.getScore());
 		out.setType(in.getType());
 		for (PlanElement pe : in.getPlanElements()) {
 			if (pe instanceof Activity) {
-				out.getPlanElements().add(createActivity((Activity) pe));
+				if (convertInteractionActivities && StageActivityTypeIdentifier.isStageActivity(((Activity) pe).getType()))
+					out.getPlanElements().add(createInteractionActivity((Activity) pe));
+				else out.getPlanElements().add(createActivity((Activity) pe));
 			} else if (pe instanceof Leg) {
 				out.getPlanElements().add( createLeg( (Leg) pe ) ) ;
 			} else {
@@ -846,7 +859,7 @@ public final class PopulationUtils {
 		}
 		AttributesUtils.copyAttributesFromTo(in, out );
 	}
-
+	
 	public static void copyFromTo(Leg in, Leg out) {
 		out.setMode( in.getMode() );
 		TripStructureUtils.setRoutingMode( out, TripStructureUtils.getRoutingMode( in ));
@@ -883,6 +896,14 @@ public final class PopulationUtils {
 		return newAct ;
 	}
 
+	public static Activity createInteractionActivity(Activity act) {
+		Activity newAct = getFactory().createInteractionActivityFromLinkId(act.getType(), act.getLinkId()) ;
+
+		copyFromTo(act, newAct);
+		// (this ends up setting type and linkId again)
+
+		return newAct ;
+	}
 
 	/**
 	 * Makes a deep copy of this leg, however only when the Leg has a route which is
